@@ -21,12 +21,20 @@ export const USUARIOS = [
 export const REGISTEREDTIME = [
     new Registry(
         'c1',
-        'a1',
+        'a2',
+        '20/05/2021',
         '10:00'
     ),
     new Registry(
         'c2',
         'a1',
+        '30/05/2021',
+        '10:34'
+    ),
+    new Registry(
+        'c3',
+        'a1',
+        '30/05/2021',
         '19:00'
     )
 ];

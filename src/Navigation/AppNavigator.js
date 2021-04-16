@@ -1,14 +1,12 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import DrawerNavigator from './RegisterNavigator';
 
-//import SplashScreen from '../screens/SplashScreen';
-//import LoginScreen from '../screens/LoginScreen';
-import { RegisterNavigator } from './RegisterNavigator';
-
+/// Main Navigator
 const AppNavigator = () => {
     return (
         <NavigationContainer>
-            <RegisterNavigator />
+            <DrawerNavigator />
         </NavigationContainer>
     );
 };

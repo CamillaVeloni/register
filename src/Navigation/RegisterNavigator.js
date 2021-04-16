@@ -1,41 +1,85 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import { 
-    createDrawerNavigator, 
-    DrawerContentScrollView, 
-    DrawerItemList, 
-    DrawerItem 
-} from '@react-navigation/drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-//import SplashScreen from '../screens/SplashScreen';
-import LoginScreen from '../screens/LoginScreen'; 
-import RegisterScreen from '../screens/RegisterScreen';
-import DashboardScreen from '../screens/DashboardScreen';
+import { MainNavigator, DashboardNavigator } from './StackNavigator';
+import Colors from '../assets/colors/Colors';
 
-/* const defaultNavigationOptions = {
-
-}; */
-
-/// Main Flow
 const Drawer = createDrawerNavigator();
-const MainNavigator = () => {
+const DrawerNavigator = () => {
     return (
-        <Drawer.Navigator>
-            <Drawer.Screen name='Home' component={RegisterScreen} />
-            <Drawer.Screen name='Dashboard' component={DashboardScreen} />
+        <Drawer.Navigator 
+            initialRouteName='Main'
+            drawerStyle={{
+                backgroundColor: Colors.primaryColor
+            }}
+            drawerContentOptions={{
+                activeBackgroundColor: 'transparent',
+                activeTintColor: Colors.drawerActiveColor,
+                inactiveTintColor: Colors.drawerInactiveColor
+            }}    
+        >
+            <Drawer.Screen 
+                name='Main' 
+                component={MainNavigator}
+                options={{
+                    drawerIcon: props => (
+                        <Icon
+                            name='content-paste'
+                            size={23}
+                            color={props.color}
+                        />
+                    )
+                }} 
+            />
+            <Drawer.Screen 
+                name='Dashboard' 
+                component={DashboardNavigator}
+                options={{
+                    drawerIcon: props => (
+                        <Icon
+                            name='view-dashboard-outline'
+                            size={23}
+                            color={props.color}
+                        />
+                    )
+                }} 
+            />
         </Drawer.Navigator>
     );
 };
 
-// Login Flow e Main Flow
-/// Login Flow constitui apenas da tela login 
-/// Main Flow constitui do Drawer Navigator criado acima
+export default DrawerNavigator;
+
+/* 
+/// Main Flow
 const Stack = createStackNavigator();
-export const RegisterNavigator = () => {
+const StackNavigator = () => {
     return (
-        <Stack.Navigator initialRouteName='Main'>
-            <Stack.Screen name='Login' component={LoginScreen} />
-            <Stack.Screen name='Main' component={MainNavigator} />
+        <Stack.Navigator
+            drawerContentOptions={{
+                activeBackgroundColor: 'transparent',
+                activeTintColor: Colors.drawerActiveColor,
+                inactiveTintColor: Colors.drawerInactiveColor
+            }}    
+        >
+            <Stack.Screen 
+                name='Dashboard' 
+                component={DashboardScreen} 
+                options={{
+                    drawerIcon: props => (
+                        <Icon
+                            name='view-dashboard-outline'
+                            size={23}
+                            color={props.color}
+                        />
+                    )
+                }}
+            />
+            <Stack.Screen 
+                name='Home' 
+                component={RegisterScreen} 
+            />
         </Stack.Navigator>
     );
-};
+};*/
