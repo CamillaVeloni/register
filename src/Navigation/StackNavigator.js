@@ -21,8 +21,8 @@ const MainNavigator = () => {
 
             }}
         >
-            <Stack.Screen name='Home' component={RegisterScreen} options={RegisterScreenOptions} />
             <Stack.Screen name='Login' component={LoginScreen} />
+            <Stack.Screen name='Home' component={RegisterScreen} options={RegisterScreenOptions} />
         </Stack.Navigator>
     );
 };

@@ -1,5 +1,5 @@
 import React from 'react'; 
-import { View, Text, StyleSheet } from 'react-native'; 
+import { View, StyleSheet } from 'react-native'; 
 import ItemText from './ItemText';
 
 const ListItem = ({ name, dayRegistered, timeRegistered, role }) => { 
@@ -27,11 +27,11 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
         marginVertical: 10,
         borderRadius: 15,
-        elevation: 2,
-        shadowColor: 'black',
-        shadowOpacity: 0.26,
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 10,
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 2,
         justifyContent: 'space-around',
     }
 });

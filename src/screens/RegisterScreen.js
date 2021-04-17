@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React, { useState } from 'react'; 
 import { FlatList, View, StyleSheet } from 'react-native'; 
 import { FAB } from 'react-native-paper';
 
@@ -6,9 +6,14 @@ import DrawerMenuBtn from '../components/DrawerMenuBtn';
 import ListItem from '../components/ListItem';
 import Colors from '../assets/colors/Colors';
 import { USUARIOS, REGISTEREDTIME } from '../data/dummy-data';
+import ModalComponent from '../components/ModalComponent';
 
 // Tela 'Meus Registros'
+// FlatList com lista de registros do usuário logado
+// Floating button para renderizar o modal (ModalComponent.js) 
 const RegisterScreen = () => { 
+    const [modalVisible, setModalVisible] = useState(false); // State para abrir ou fechar o modal
+
     // Renderizando os registros do usuário ou admin
     const renderItem = ({ item }) => {
         return (
@@ -33,8 +38,9 @@ const RegisterScreen = () => {
             <FAB
                 icon='plus'
                 style={styles.fabStyle}
-                onPress={() => console.log('Lógica para modal')}
+                onPress={() => setModalVisible(true)}
             />
+            <ModalComponent modalVisible={modalVisible} onClose={() => setModalVisible(false)} />
         </View>
     );
 };
