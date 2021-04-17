@@ -1,8 +1,10 @@
 import React from 'react'; 
-import { FlatList } from 'react-native'; 
+import { FlatList, View, StyleSheet } from 'react-native'; 
+import { FAB } from 'react-native-paper';
 
 import DrawerMenuBtn from '../components/DrawerMenuBtn';
 import ListItem from '../components/ListItem';
+import Colors from '../assets/colors/Colors';
 import { USUARIOS, REGISTEREDTIME } from '../data/dummy-data';
 
 // Tela 'Meus Registros'
@@ -22,11 +24,18 @@ const RegisterScreen = () => {
     const loggedUser = USUARIOS.find(({ id }) => id === 'a1');
     const selectedRegistry = REGISTEREDTIME.filter(({ userId }) => userId === loggedUser.id);
     return ( 
-        <FlatList
-            data={selectedRegistry}
-            showsHorizontalScrollIndicator={false}
-            renderItem={renderItem}
-        />
+        <View style={{ flex: 1 }}>
+            <FlatList
+                data={selectedRegistry}
+                showsHorizontalScrollIndicator={false}
+                renderItem={renderItem}
+            />
+            <FAB
+                icon='plus'
+                style={styles.fabStyle}
+                onPress={() => console.log('Lógica para modal')}
+            />
+        </View>
     );
 };
 
@@ -39,8 +48,14 @@ export const screenOptions = ({ navigation }) => {
     };
 }; 
 
-/* const styles = StyleSheet.create({
-
-}); */
+const styles = StyleSheet.create({
+    fabStyle: {
+        position: 'absolute',
+        backgroundColor: Colors.accentColor,
+        right: 0,
+        bottom: 0,
+        margin: 16
+    }
+}); 
 
 export default RegisterScreen;
