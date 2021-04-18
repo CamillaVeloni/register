@@ -11,6 +11,7 @@ import ModalComponent from '../components/ModalComponent';
 // Tela 'Meus Registros'
 // FlatList com lista de registros do usuário logado
 // Floating button para renderizar o modal (ModalComponent.js) 
+// Componentes criados para ele: ListItem (item para lista) e ModalComponent (criação de registro)
 const RegisterScreen = () => { 
     const [modalVisible, setModalVisible] = useState(false); // State para abrir ou fechar o modal
 

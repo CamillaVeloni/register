@@ -50,36 +50,3 @@ const DrawerNavigator = () => {
 };
 
 export default DrawerNavigator;
-
-/* 
-/// Main Flow
-const Stack = createStackNavigator();
-const StackNavigator = () => {
-    return (
-        <Stack.Navigator
-            drawerContentOptions={{
-                activeBackgroundColor: 'transparent',
-                activeTintColor: Colors.drawerActiveColor,
-                inactiveTintColor: Colors.drawerInactiveColor
-            }}    
-        >
-            <Stack.Screen 
-                name='Dashboard' 
-                component={DashboardScreen} 
-                options={{
-                    drawerIcon: props => (
-                        <Icon
-                            name='view-dashboard-outline'
-                            size={23}
-                            color={props.color}
-                        />
-                    )
-                }}
-            />
-            <Stack.Screen 
-                name='Home' 
-                component={RegisterScreen} 
-            />
-        </Stack.Navigator>
-    );
-};*/

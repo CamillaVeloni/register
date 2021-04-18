@@ -1,39 +1,31 @@
 import React from 'react'; 
-import { View, Text, StyleSheet } from 'react-native'; 
-import Svg, { Ellipse } from 'react-native-svg';
+import { View, StyleSheet } from 'react-native'; 
 import Colors from '../assets/colors/Colors';
+import SvgComponent from '../components/LogoComponent';
 
+// Componentes: SvgComponent para criar os ellipses
 const SplashScreen = () => { 
     return ( 
-    <View style={[StyleSheet.absoluteFill, styles.container]}> 
-        <Svg height='150' width='300'>
-            <Ellipse
-                cx='150'
-                cy='75'
-                rx='70'
-                ry='70'
-                stroke={Colors.primaryColor}
-                strokeWidth='4'
-            />
-            <Ellipse
-                cx='145'
-                cy='70'
-                rx='70'
-                ry='70'
-                stroke={Colors.primaryColor}
-                strokeWidth='1'
-            />
-        </Svg>
-        <Text style={styles.title}>Register</Text>
-        <Text style={styles.subtitle}>Acess Control</Text>
+    <View style={styles.container}> 
+        <SvgComponent
+            height='150'
+            width='300'
+            coordX='150'
+            coordY='75'
+            radiusX='70'
+            radiusY='70'
+            strokeWidth='4'
+            ownTitleStyle={{ fontSize: 50 }}
+            ownSubtitleStyle={{ fontSize: 20 }}
+        />
     </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         justifyContent: 'center', 
-        alignItems: 'center',
         backgroundColor: Colors.backgroundColor
     },
     ellipseImage: {

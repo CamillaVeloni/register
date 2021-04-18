@@ -5,6 +5,7 @@ import DrawerMenuBtn from '../components/DrawerMenuBtn';
 /* import ListItem from '../components/ListItem';
 import { REGISTEREDTIME } from '../data/dummy-data'; */
 
+// Componentes para ele: ListItem
 const DashboardScreen = () => {
     return ( 
         <View style={{ justifyContent: 'center', alignContent: 'center', flex: 1 }}>

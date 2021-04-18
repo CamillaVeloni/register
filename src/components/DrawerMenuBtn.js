@@ -1,9 +1,10 @@
 import React from 'react';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import DefaultHeaderBtn from './DefaultHeaderBtn';
+import DefaultHeaderBtn from './commons/DefaultHeaderBtn';
 
 /// Lógica do botão menu do drawer
-//// Colocada tanto na tela Register como na tela Dashboard
+/// Colocada tanto na tela Register como na tela Dashboard
+/// HeaderButtonComponent é um componente reusável
 const DrawerMenuBtn = ({ onPress }) => {
     return (
         <HeaderButtons HeaderButtonComponent={DefaultHeaderBtn}>  

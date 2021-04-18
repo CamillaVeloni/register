@@ -2,20 +2,24 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native'; 
 import ItemText from './ItemText';
 
+// Componente Item das listas do 'Dashboard' e do 'Meus Registros'
 const ListItem = ({ name, dayRegistered, timeRegistered, role }) => { 
+    const TEXT_DAY = 'Data';
+    const TEXT_TIME = 'Horário';
+
     return ( 
         <View style={styles.itemContainer}>
             <ItemText
-                firstText={role}
-                segText={name}
+                infoText={role}
+                dinamicText={name}
             />
             <ItemText
-                firstText={'Data'}
-                segText={dayRegistered}
+                infoText={TEXT_DAY}
+                dinamicText={dayRegistered}
             />
             <ItemText
-                firstText={'Horário'}
-                segText={timeRegistered}
+                infoText={TEXT_TIME}
+                dinamicText={timeRegistered}
             />
         </View>
     );

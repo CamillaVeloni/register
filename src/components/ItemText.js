@@ -1,11 +1,12 @@
 import React from 'react'; 
 import { Text, StyleSheet } from 'react-native'; 
 
-const ItemText = ({ firstText, segText }) => { 
+// Componente usado no ListItem para agrupar as informações
+const ItemText = ({ infoText, dinamicText }) => { 
     return ( 
     <Text style={styles.itemText}>
-        <Text style={{ fontWeight: 'bold' }}>{firstText}: </Text>
-        <Text>{segText}</Text>
+        <Text style={{ fontWeight: 'bold' }}>{infoText}: </Text>
+        <Text>{dinamicText}</Text>
     </Text>
     );
 };

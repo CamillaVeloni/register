@@ -1,31 +1,23 @@
 import React from 'react'; 
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'; 
-import Svg, { Ellipse } from 'react-native-svg';
+
+import SvgComponent from '../components/LogoComponent';
 import Colors from '../assets/colors/Colors';
 
+// Tela Login
+// Componentes para ele: SvgComponent para criar os ellipses
 const LoginScreen = ({ navigation }) => { 
     return ( 
     <View style={[StyleSheet.absoluteFill, styles.container]}> 
-        <Svg height='100' width='100'>
-            <Ellipse
-                cx='55'
-                cy='55'
-                rx='40'
-                ry='40'
-                stroke={Colors.primaryColor}
-                strokeWidth='4'
-            />
-            <Ellipse
-                cx='50'
-                cy='50'
-                rx='40'
-                ry='40'
-                stroke={Colors.primaryColor}
-                strokeWidth='1'
-            />
-        </Svg>
-        <Text style={styles.title}>Register</Text>
-        <Text style={styles.subtitle}>Acess Control</Text>
+        <SvgComponent
+            height='100'
+            width='100'
+            coordX='55'
+            coordY='55'
+            radiusX='40'
+            radiusY='40'
+            strokeWidth='5'
+        />
         <View style={styles.formContainer}>
             <TextInput
                 placeholder='Login' 
@@ -53,11 +45,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center',
         backgroundColor: Colors.backgroundColor
-    },
-    ellipseImage: {
-        position: 'absolute',
-        width: 100,
-        height: 100,
     },
     title: {
         color: 'white',
