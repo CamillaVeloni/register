@@ -4,8 +4,9 @@ import Svg, { Ellipse } from 'react-native-svg';
 
 import Colors from '../assets/colors/Colors';
 
-// Elemento SVG ~~ ellipse
-// Colocado tanto na tela login e na tela splash 
+// Componente para tela login e Splash
+// Mostra a logo e o nome do app
+// Elemento SVG ~~ ellipse + titulo e subtitulo do app
 const SvgComponent = ({ 
     height, 
     width, 

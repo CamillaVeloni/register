@@ -16,4 +16,4 @@ const DefaultHeaderBtn = props => {
   );
 };
 
-export default DefaultHeaderBtn;
+export { DefaultHeaderBtn };

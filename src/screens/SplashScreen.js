@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import Colors from '../assets/colors/Colors';
 import SvgComponent from '../components/LogoComponent';
 
-// Componentes: SvgComponent para criar os ellipses
+// Componentes: LogoComponent
 const SplashScreen = () => { 
     return ( 
     <View style={styles.container}> 

@@ -1,12 +1,48 @@
-import React from 'react'; 
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'; 
+import React, { useState } from 'react'; 
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'; 
+import { useMutation } from '@apollo/client';
 
+import { LOGIN_MUTATION } from '../graphql/requests';
+import { Input } from '../components/commons';
 import SvgComponent from '../components/LogoComponent';
 import Colors from '../assets/colors/Colors';
 
-// Tela Login
-// Componentes para ele: SvgComponent para criar os ellipses
+// Tela login
+// Componentes para ele: LogoComponent 
 const LoginScreen = ({ navigation }) => { 
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
+    const [err, setErr] = useState(false);
+
+    const [LoginUserMutation] = useMutation(LOGIN_MUTATION, {
+        onError: err => {
+            console.log(err.graphQLErrors[0].message);
+            setErr(true);
+        },
+        onCompleted: (data) => {
+            setLogin('');
+            setPassword('');
+            setErr(false);
+            console.log(data);
+        }
+    });
+
+    const onLoginPress = async (ev) => {
+        ev.preventDefault();
+        LoginUserMutation({
+            variables: {
+                input:
+                {
+                identifier: login,
+                password,
+                }
+            },
+        });
+    };
+    function renderErrorMsg() {
+        return <Text style={styles.errorStyle}>Algo deu errado, tente outra vez mais tarde.</Text>;
+    }
+
     return ( 
     <View style={[StyleSheet.absoluteFill, styles.container]}> 
         <SvgComponent
@@ -19,21 +55,31 @@ const LoginScreen = ({ navigation }) => {
             strokeWidth='5'
         />
         <View style={styles.formContainer}>
-            <TextInput
+            <Input
                 placeholder='Login' 
-                style={styles.formInput}
                 placeholderTextColor='black'
+                keyboardType='default'
+                autoCapitalize='none'
+                value={login}
+                onChangeText={setLogin}
             />
-            <TextInput
-                style={styles.formInput}
-                placeholder='Senha'
+            <Input
+                placeholder='Senha' 
                 placeholderTextColor='black'
+                secureTextEntry
+                keyboardType='default'
+                autoCapitalize='none'
+                value={password}
+                onChangeText={setPassword}
             />
+            {
+                err ? renderErrorMsg() : null
+            }
             <TouchableOpacity
                 style={styles.formBtn}
-                onPress={() => navigation.replace('Home')}
+                onPress={onLoginPress}
             >
-                <Text style={styles.formTextBtn}>Login</Text>
+                <Text style={styles.formTextBtn}>login</Text>
             </TouchableOpacity>
         </View>
     </View>
@@ -46,15 +92,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: Colors.backgroundColor
     },
-    title: {
-        color: 'white',
-        fontSize: 23,
-        fontWeight: 'bold'
-    },
-    subtitle: {
-        color: Colors.primaryColor,
-        fontSize: 16
-    },
     formContainer: {
         width: '80%',
         maxWidth: 400,
@@ -62,9 +99,7 @@ const styles = StyleSheet.create({
         padding: 20,            
         borderRadius: 40,
         backgroundColor: 'white',
-        marginLeft: 5,
-        marginRight: 5,
-        marginTop: 20
+        marginTop: 10
     },
     formBtn: {
         paddingVertical: 10,
@@ -78,9 +113,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'white'
     },
-    formInput: {
-        marginHorizontal: 2,
-        marginVertical: 5,
+    errorStyle: {
+        color: 'red'
     }
 });
 

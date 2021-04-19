@@ -29,6 +29,8 @@ const RegisterScreen = () => {
     
     const loggedUser = USUARIOS.find(({ id }) => id === 'a1');
     const selectedRegistry = REGISTEREDTIME.filter(({ userId }) => userId === loggedUser.id);
+    console.log(selectedRegistry);
+
     return ( 
         <View style={{ flex: 1 }}>
             <FlatList

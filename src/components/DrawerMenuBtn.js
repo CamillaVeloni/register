@@ -1,6 +1,6 @@
 import React from 'react';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import DefaultHeaderBtn from './commons/DefaultHeaderBtn';
+import { DefaultHeaderBtn } from './commons';
 
 /// Lógica do botão menu do drawer
 /// Colocada tanto na tela Register como na tela Dashboard

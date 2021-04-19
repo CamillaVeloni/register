@@ -1,18 +1,19 @@
 import React from 'react'; 
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 
-import reducers from './store/reducers';
 import AppNavigator from './Navigation/AppNavigator';
+import { BASE_URL } from './config';
 
-// Wrapping o App com o Store do redux
-// Não esquecer de colocar redux-thunk depois para async actions
-const store = createStore(reducers);
+const client = new ApolloClient({ 
+  uri: BASE_URL,
+  cache: new InMemoryCache()
+});
+
 const App = () => { 
-  return ( 
-    <Provider store={store}>
+  return (
+    <ApolloProvider client={client}>
       <AppNavigator />
-    </Provider>
+    </ApolloProvider>
   );
 };
 
