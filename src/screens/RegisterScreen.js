@@ -1,7 +1,7 @@
 import React, { useState } from 'react'; 
-import { FlatList, View, StyleSheet } from 'react-native'; 
+import { FlatList, View, StyleSheet, Button } from 'react-native'; 
 import { FAB } from 'react-native-paper';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DrawerMenuBtn from '../components/DrawerMenuBtn';
 import ListItem from '../components/ListItem';
 import Colors from '../assets/colors/Colors';
@@ -12,8 +12,17 @@ import ModalComponent from '../components/ModalComponent';
 // FlatList com lista de registros do usuário logado
 // Floating button para renderizar o modal (ModalComponent.js) 
 // Componentes criados para ele: ListItem (item para lista) e ModalComponent (criação de registro)
-const RegisterScreen = () => { 
+const RegisterScreen = ({ navigation }) => { 
     const [modalVisible, setModalVisible] = useState(false); // State para abrir ou fechar o modal
+
+    const onLogOut = async () => {
+        try {
+          await AsyncStorage.removeItem('@acessToken');
+          navigation.replace('Login');
+        } catch (err) {
+          throw new Error(err);
+        }
+    };
 
     // Renderizando os registros do usuário ou admin
     const renderItem = ({ item }) => {
@@ -29,10 +38,13 @@ const RegisterScreen = () => {
     
     const loggedUser = USUARIOS.find(({ id }) => id === 'a1');
     const selectedRegistry = REGISTEREDTIME.filter(({ userId }) => userId === loggedUser.id);
-    console.log(selectedRegistry);
 
     return ( 
         <View style={{ flex: 1 }}>
+            <Button
+                title='Sair'
+                onPress={onLogOut}
+            />
             <FlatList
                 data={selectedRegistry}
                 showsHorizontalScrollIndicator={false}

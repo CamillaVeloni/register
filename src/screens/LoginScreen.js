@@ -1,6 +1,7 @@
 import React, { useState } from 'react'; 
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'; 
+import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native'; 
 import { useMutation } from '@apollo/client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { LOGIN_MUTATION } from '../graphql/requests';
 import { Input } from '../components/commons';
@@ -10,25 +11,39 @@ import Colors from '../assets/colors/Colors';
 // Tela login
 // Componentes para ele: LogoComponent 
 const LoginScreen = ({ navigation }) => { 
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
-    const [err, setErr] = useState(false);
+    // States para o formulário de login
+    const [login, setLogin] = useState(''); // email
+    const [password, setPassword] = useState(''); // senha
+    const [loading, setLoading] = useState(''); // spinner para espera resposta
+    const [err, setErr] = useState(false); // mensagem de erro
 
+    function clearStates() {
+        setLogin('');
+        setPassword('');
+        setErr('');
+        setLoading(false);
+    }
+
+    // Usando hook para request ao api
+    // onError: quando ocorre algum erro no request, volta o erro (err.graphQLErrors[0].message)
+    // onCompleted: volta a data de quando estiver sucedido. 
+    // No onCompleted a gente limpa todos os states, seta o token no asyncStorage e navega para tela 'Meus Registros'
     const [LoginUserMutation] = useMutation(LOGIN_MUTATION, {
-        onError: err => {
-            console.log(err.graphQLErrors[0].message);
-            setErr(true);
+        onError: () => {
+            setErr('Algo deu errado tente novamente mais tarde.');
+            setLoading(false);
         },
-        onCompleted: (data) => {
-            setLogin('');
-            setPassword('');
-            setErr(false);
-            console.log(data);
+        onCompleted: ({ login: { jwt } }) => {
+            clearStates();
+            AsyncStorage.setItem('@acessToken', `Bearer ${jwt}`);
+            navigation.replace('Home');
         }
     });
-
+    // Função para botão de login
     const onLoginPress = async (ev) => {
         ev.preventDefault();
+
+        setLoading(true);
         LoginUserMutation({
             variables: {
                 input:
@@ -39,8 +54,22 @@ const LoginScreen = ({ navigation }) => {
             },
         });
     };
+
+    // Renderizando uma mensagem de erro
     function renderErrorMsg() {
-        return <Text style={styles.errorStyle}>Algo deu errado, tente outra vez mais tarde.</Text>;
+        if (err) return <Text style={styles.errorStyle}>{err}</Text>;
+    }
+    // Renderizando botão de login ou spinner enquanto espera resposta da api
+    function renderBtnLogin() {
+        if (loading) return <ActivityIndicator size="large" color={Colors.primaryColor} />;
+        return (
+            <TouchableOpacity
+                    style={styles.formBtn}
+                    onPress={onLoginPress}
+            >
+                    <Text style={styles.formTextBtn}>login</Text>
+            </TouchableOpacity>
+        );
     }
 
     return ( 
@@ -72,15 +101,8 @@ const LoginScreen = ({ navigation }) => {
                 value={password}
                 onChangeText={setPassword}
             />
-            {
-                err ? renderErrorMsg() : null
-            }
-            <TouchableOpacity
-                style={styles.formBtn}
-                onPress={onLoginPress}
-            >
-                <Text style={styles.formTextBtn}>login</Text>
-            </TouchableOpacity>
+            {renderErrorMsg()}
+            {renderBtnLogin()}
         </View>
     </View>
     );
@@ -103,6 +125,7 @@ const styles = StyleSheet.create({
     },
     formBtn: {
         paddingVertical: 10,
+        marginTop: 5,
         alignContent: 'center',
         backgroundColor: Colors.accentColor,
         width: '30%',
