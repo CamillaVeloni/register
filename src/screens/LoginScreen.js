@@ -29,13 +29,17 @@ const LoginScreen = ({ navigation }) => {
     // onCompleted: volta a data de quando estiver sucedido. 
     // No onCompleted a gente limpa todos os states, seta o token no asyncStorage e navega para tela 'Meus Registros'
     const [LoginUserMutation] = useMutation(LOGIN_MUTATION, {
-        onError: () => {
+        onError: (e) => {
+            console.log(e.graphQLErrors[0].message);
             setErr('Algo deu errado tente novamente mais tarde.');
             setLoading(false);
         },
-        onCompleted: ({ login: { jwt } }) => {
+        onCompleted: ({ login: { jwt, user } }) => {
             clearStates();
-            AsyncStorage.setItem('@acessToken', `Bearer ${jwt}`);
+            AsyncStorage.setItem('@acessToken', jwt);
+            const { id, username } = user;
+            console.log(id);
+            console.log(username);
             navigation.replace('Home');
         }
     });

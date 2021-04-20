@@ -40,19 +40,20 @@ const MainNavigator = () => {
                 },
 
             }}
+            initialRouteName={isLogged ? 'Home' : 'Login'}
         >   
-            {!isLogged ? (
-                <>
-                <Stack.Screen name='Login' component={LoginScreen} />
-                <Stack.Screen name='Home' component={RegisterScreen} options={RegisterScreenOptions} />
-                </>
-            ) : (
-                <>
-                <Stack.Screen name='Home' component={RegisterScreen} options={RegisterScreenOptions} />
-                <Stack.Screen name='Login' component={LoginScreen} />
-                </>
-            )
-            }
+            <Stack.Screen 
+                name='Home' 
+                component={RegisterScreen} 
+                options={RegisterScreenOptions} 
+            />
+            <Stack.Screen 
+                name='Login' 
+                component={LoginScreen}
+                options={{
+                    headerShown: false
+                }}
+            />
         </Stack.Navigator>
     );
 };

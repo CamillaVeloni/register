@@ -1,5 +1,5 @@
-import React, { useState } from 'react'; 
-import { FlatList, View, StyleSheet, Button } from 'react-native'; 
+import React, { useEffect, useState } from 'react'; 
+import { FlatList, View, StyleSheet } from 'react-native'; 
 import { FAB } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DrawerMenuBtn from '../components/DrawerMenuBtn';
@@ -14,15 +14,15 @@ import ModalComponent from '../components/ModalComponent';
 // Componentes criados para ele: ListItem (item para lista) e ModalComponent (criação de registro)
 const RegisterScreen = ({ navigation }) => { 
     const [modalVisible, setModalVisible] = useState(false); // State para abrir ou fechar o modal
-
+    
     const onLogOut = async () => {
         try {
-          await AsyncStorage.removeItem('@acessToken');
+          //await AsyncStorage.removeItem('@acessToken');
           navigation.replace('Login');
         } catch (err) {
           throw new Error(err);
         }
-    };
+    }; 
 
     // Renderizando os registros do usuário ou admin
     const renderItem = ({ item }) => {
@@ -41,10 +41,6 @@ const RegisterScreen = ({ navigation }) => {
 
     return ( 
         <View style={{ flex: 1 }}>
-            <Button
-                title='Sair'
-                onPress={onLogOut}
-            />
             <FlatList
                 data={selectedRegistry}
                 showsHorizontalScrollIndicator={false}

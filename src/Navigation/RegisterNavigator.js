@@ -2,22 +2,15 @@ import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import CustomDrawerContent from './CustomDrawerContent';
 import { MainNavigator, DashboardNavigator } from './StackNavigator';
-import Colors from '../assets/colors/Colors';
 
 const Drawer = createDrawerNavigator();
 const DrawerNavigator = () => {
     return (
         <Drawer.Navigator 
+            drawerContent={CustomDrawerContent}
             initialRouteName='Main'
-            drawerStyle={{
-                backgroundColor: Colors.primaryColor
-            }}
-            drawerContentOptions={{
-                activeBackgroundColor: 'transparent',
-                activeTintColor: Colors.drawerActiveColor,
-                inactiveTintColor: Colors.drawerInactiveColor
-            }}    
         >
             <Drawer.Screen 
                 name='Main' 

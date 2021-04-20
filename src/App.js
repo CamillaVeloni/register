@@ -1,12 +1,31 @@
 import React from 'react'; 
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
-
+import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache, concat } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppNavigator from './Navigation/AppNavigator';
 import { BASE_URL } from './config';
 
+const httpLink = new HttpLink({ uri: BASE_URL });
+
+const cache = new InMemoryCache();
+
+const authMiddleware = setContext(async (_, { headers }) => {
+  // Pegando jwt do async storage se existir dentro
+  const accessToken = await AsyncStorage.getItem('@accessToken');
+  //console.log('Auth Token injetado: ', accessToken);
+  // Retornar headers para httpLink ter acesso
+  // Só tem o token de authorization
+  return {
+      headers: {
+          ...headers,
+          authorization: accessToken ? `Bearer ${accessToken}` : '',
+      },
+  };
+});
+
 const client = new ApolloClient({ 
-  uri: BASE_URL,
-  cache: new InMemoryCache()
+  cache,
+  link: concat(authMiddleware, httpLink),
 });
 
 const App = () => { 
