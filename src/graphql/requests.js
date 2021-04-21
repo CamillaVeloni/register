@@ -7,8 +7,35 @@ mutation login($input: UsersPermissionsLoginInput!){
       jwt
       user {
         id
-        username
       }
     }
+}
+`;
+
+export const FETCHING_USER = gql`
+query {
+  me {
+    id
+    username
+    role {
+      name
+    }
+  }
+}
+`;
+
+export const REGISTERED_TIMES = gql`
+query {
+  registeredTimes {
+    id
+    timeRegistered
+    user {
+      id
+      name
+      role {
+        name
+      }
+    }
+  }
 }
 `;

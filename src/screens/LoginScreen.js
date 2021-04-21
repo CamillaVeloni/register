@@ -1,8 +1,8 @@
 import React, { useState } from 'react'; 
 import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native'; 
 import { useMutation } from '@apollo/client';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { fetchToken } from '../actions/auth';
 import { LOGIN_MUTATION } from '../graphql/requests';
 import { Input } from '../components/commons';
 import SvgComponent from '../components/LogoComponent';
@@ -29,18 +29,15 @@ const LoginScreen = ({ navigation }) => {
     // onCompleted: volta a data de quando estiver sucedido. 
     // No onCompleted a gente limpa todos os states, seta o token no asyncStorage e navega para tela 'Meus Registros'
     const [LoginUserMutation] = useMutation(LOGIN_MUTATION, {
-        onError: (e) => {
-            console.log(e.graphQLErrors[0].message);
+        onError: error => {
             setErr('Algo deu errado tente novamente mais tarde.');
             setLoading(false);
         },
         onCompleted: ({ login: { jwt, user } }) => {
+            const { id } = user;
             clearStates();
-            AsyncStorage.setItem('@acessToken', jwt);
-            const { id, username } = user;
-            console.log(id);
-            console.log(username);
-            navigation.replace('Home');
+            fetchToken(jwt);
+            navigation.navigate('Main', { userID: id });
         }
     });
     // Função para botão de login

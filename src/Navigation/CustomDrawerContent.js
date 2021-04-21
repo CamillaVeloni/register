@@ -6,16 +6,16 @@ import {
     DrawerItemList,
     DrawerItem
 } from '@react-navigation/drawer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { onSignOut } from '../actions/auth';
 import Colors from '../assets/colors/Colors';
   
 const CustomDrawerContent = props => { 
     const onLogOut = async () => {
         try {
-          await AsyncStorage.removeItem('@acessToken');
-          props.navigation.navigate('Login');
+            onSignOut();
+            props.navigation.navigate('Login');
         } catch (err) {
           throw new Error(err);
         }

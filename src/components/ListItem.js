@@ -1,25 +1,28 @@
 import React from 'react'; 
 import { View, StyleSheet } from 'react-native'; 
+import 'intl';
+import 'intl/locale-data/jsonp/pt-BR';
 import ItemText from './ItemText';
 
 // Componente Item das listas do 'Dashboard' e do 'Meus Registros'
-const ListItem = ({ name, dayRegistered, timeRegistered, role }) => { 
+const ListItem = ({ name, timeRegistered, role }) => { 
     const TEXT_DAY = 'Data';
     const TEXT_TIME = 'Horário';
+    const infoUser = ['Administrador', 'Colaborador'];
 
     return ( 
         <View style={styles.itemContainer}>
             <ItemText
-                infoText={role}
+                infoText={role === 'admin' ? infoUser[0] : infoUser[1]}
                 dinamicText={name}
             />
             <ItemText
                 infoText={TEXT_DAY}
-                dinamicText={dayRegistered}
+                dinamicText={timeRegistered ? timeRegistered.substring(0, 9) : 'Não informado'}
             />
             <ItemText
                 infoText={TEXT_TIME}
-                dinamicText={timeRegistered}
+                dinamicText={timeRegistered ? timeRegistered.substring(11, 19) : 'Não informado'}
             />
         </View>
     );

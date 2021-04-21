@@ -4,13 +4,13 @@ import { View, Text, TextInput, StyleSheet } from 'react-native';
 // Componente reusável para o input
 const Input = props => { 
     return ( 
-     <View> 
+     <View style={props.ownContainerStyle}> 
         {props.requiresLabel && (
-            <Text style={styles.label}>{props.label}</Text>
+            <Text style={[styles.label, props.ownLabelStyle]}>{props.label}</Text>
         )}
         <TextInput 
             {...props}
-            style={styles.input}
+            style={[styles.input, props.ownInputStyle]}
         />
      </View>
     );

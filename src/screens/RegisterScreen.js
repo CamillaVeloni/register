@@ -1,57 +1,47 @@
-import React, { useEffect, useState } from 'react'; 
-import { FlatList, View, StyleSheet } from 'react-native'; 
+import React, { useState, useEffect } from 'react'; 
+import { ActivityIndicator, View, StyleSheet } from 'react-native'; 
 import { FAB } from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useQuery } from '@apollo/client';
+
+import ComponentList from '../components/ComponentList';
+import { FETCHING_USER } from '../graphql/requests';
 import DrawerMenuBtn from '../components/DrawerMenuBtn';
-import ListItem from '../components/ListItem';
 import Colors from '../assets/colors/Colors';
-import { USUARIOS, REGISTEREDTIME } from '../data/dummy-data';
 import ModalComponent from '../components/ModalComponent';
 
 // Tela 'Meus Registros'
 // FlatList com lista de registros do usuário logado
 // Floating button para renderizar o modal (ModalComponent.js) 
 // Componentes criados para ele: ListItem (item para lista) e ModalComponent (criação de registro)
-const RegisterScreen = ({ navigation }) => { 
+const RegisterScreen = () => { 
     const [modalVisible, setModalVisible] = useState(false); // State para abrir ou fechar o modal
-    
-    const onLogOut = async () => {
-        try {
-          //await AsyncStorage.removeItem('@acessToken');
-          navigation.replace('Login');
-        } catch (err) {
-          throw new Error(err);
-        }
-    }; 
+    const [userId, setUserId] = useState();
+    const { data, loading } = useQuery(FETCHING_USER);
 
-    // Renderizando os registros do usuário ou admin
-    const renderItem = ({ item }) => {
-        return (
-            <ListItem 
-                name={loggedUser.name}
-                role={loggedUser.role}
-                timeRegistered={item.timeRegistered}
-                dayRegistered={item.dayRegistered}
-            />
-        );
-    };
-    
-    const loggedUser = USUARIOS.find(({ id }) => id === 'a1');
-    const selectedRegistry = REGISTEREDTIME.filter(({ userId }) => userId === loggedUser.id);
+    useEffect(() => {
+        if (data) {
+            const { me: { id } } = data;
+            setUserId(id);
+        }
+    }, [data]);
 
     return ( 
         <View style={{ flex: 1 }}>
-            <FlatList
-                data={selectedRegistry}
-                showsHorizontalScrollIndicator={false}
-                renderItem={renderItem}
-            />
+            {loading ? (
+                <ActivityIndicator size='large' color='green' />
+            ) : (
+                <ComponentList userId={userId} />
+            )
+            }
             <FAB
                 icon='plus'
                 style={styles.fabStyle}
                 onPress={() => setModalVisible(true)}
             />
-            <ModalComponent modalVisible={modalVisible} onClose={() => setModalVisible(false)} />
+            <ModalComponent 
+                modalVisible={modalVisible} 
+                onClose={() => setModalVisible(false)}
+            />
         </View>
     );
 };

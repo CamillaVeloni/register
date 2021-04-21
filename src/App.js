@@ -5,7 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppNavigator from './Navigation/AppNavigator';
 import { BASE_URL } from './config';
 
-const httpLink = new HttpLink({ uri: BASE_URL });
+const httpLink = new HttpLink({ 
+  uri: BASE_URL,
+  credentials: 'include'
+});
 
 const cache = new InMemoryCache();
 
