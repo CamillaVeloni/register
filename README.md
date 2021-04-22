@@ -11,6 +11,11 @@ cd register
 # Instalar npm dependências 
 yarn;
 
+# Modificar a url da api
+Em src/config/index.js
+
+const BASE_URL
+
 # Dependências usadas no projeto:
 React Navigation ~~ stack, drawer, header buttons
 
