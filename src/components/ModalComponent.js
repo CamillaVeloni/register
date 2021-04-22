@@ -67,9 +67,7 @@ const ModalComponent = ({ modalVisible, onClose, userId, userName }) => {
                 <View style={{ flexDirection: 'row', margin: 5 }}>
                     <TouchableOpacity
                         style={[styles.formBtn, { backgroundColor: Colors.accentColor }]}
-                        onPress={e => {
-                            e.preventDefault();
-                        }}
+                        onPress={savingRegister}
                     >
                         <Text style={[styles.formTextBtn, { color: 'white' }]}>Salvar</Text>
                     </TouchableOpacity>
