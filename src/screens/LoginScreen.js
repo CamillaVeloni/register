@@ -1,5 +1,5 @@
-import React, { useCallback, useReducer } from 'react'; 
-import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native'; 
+import React, { useCallback, useEffect, useReducer } from 'react'; 
+import { View, StyleSheet, TouchableOpacity, Alert, Text, ActivityIndicator } from 'react-native'; 
 import { useMutation } from '@apollo/client';
 
 import { fetchToken } from '../actions/auth';
@@ -67,7 +67,7 @@ const LoginScreen = ({ navigation }) => {
     // onError: quando ocorre algum erro no request, volta o erro (err.graphQLErrors[0].message)
     // onCompleted: volta a data de quando estiver sucedido. 
     // No onCompleted a gente limpa todos os states, seta o token no asyncStorage e navega para tela 'Meus Registros'
-    const [login, { loading }] = useMutation(LOGIN_MUTATION, {
+    const [login, { loading, error }] = useMutation(LOGIN_MUTATION, {
         variables: {
             input:
             {
@@ -80,6 +80,12 @@ const LoginScreen = ({ navigation }) => {
             navigation.navigate('Main');
         }
     });
+
+    useEffect(() => {
+      if (error) {
+            Alert.alert('Algo deu errado, tente outra vez mais tarde.');
+        }
+    }, [error]);
 
     // Renderizando botão de login ou spinner enquanto espera resposta da api
     function renderBtnLogin() {

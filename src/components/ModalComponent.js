@@ -36,7 +36,7 @@ const ModalComponent = ({ modalVisible, onClose, userId, userName }) => {
 
     useEffect(() => {
         if (error) {
-            Alert.alert('Algo deu errado, tente outra vez mais tarde.', error.graphQLErrors[0].message, [{ text: 'Okay' }]);
+            Alert.alert('Algo deu errado, tente outra vez mais tarde.');
         }
     }, [error]);
 
@@ -67,12 +67,14 @@ const ModalComponent = ({ modalVisible, onClose, userId, userName }) => {
                 <View style={{ flexDirection: 'row', margin: 5 }}>
                     <TouchableOpacity
                         style={[styles.formBtn, { backgroundColor: Colors.accentColor }]}
+                        onPress={e => {
+                            e.preventDefault();
+                        }}
                     >
                         <Text style={[styles.formTextBtn, { color: 'white' }]}>Salvar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.formBtn, { backgroundColor: 'white' }]}
-                        onPress={savingRegister}
                         onPress={onClose}
                     >
                         <Text style={[styles.formTextBtn, { color: Colors.accentColor }]}>Cancelar</Text>
