@@ -30,3 +30,5 @@ React Native Paper
 React Native Vector Icons
 
 React Native SVG
+
+Moment
