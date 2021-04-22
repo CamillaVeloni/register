@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'; 
 import { Modal, StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'; 
 import { useMutation } from '@apollo/client';
+import moment from 'moment';
 
 import { CREATE_REGISTERED_TIME } from '../graphql/requests';
 import Colors from '../assets/colors/Colors';
@@ -9,22 +10,24 @@ import Colors from '../assets/colors/Colors';
 /// Aparece quando o floating button da Tela de 'Meus Registros' for clicado
 const ModalComponent = ({ modalVisible, onClose, userId, userName }) => { 
     const [values, setValues] = useState({
-        time: '',
-        date: ''
+        time: moment().format('HH:MM'),
+        date: moment().format('L')
     });
-    const [current, setCurrent] = useState(new Date());
 
     const [savingRegister, { loading, error }] = useMutation(CREATE_REGISTERED_TIME, {
         variables: {
             input: {
                 data: {
-                    timeRegistered: current.toLocaleString(),
+                    timeRegistered: new Date().toJSON(),
                     user: userId,
-                    published_at: current,
+                    published_at: new Date().toJSON(),
                     created_by: userId,
                     updated_by: userId
                 }
             }
+        },
+        onError: (e) => {
+            console.log(e);
         },
         onCompleted: () => {
             Alert.alert('Registro salvo com sucesso.', [{ text: 'Okay' }]);
@@ -35,13 +38,7 @@ const ModalComponent = ({ modalVisible, onClose, userId, userName }) => {
         if (error) {
             Alert.alert('Algo deu errado, tente outra vez mais tarde.', error.graphQLErrors[0].message, [{ text: 'Okay' }]);
         }
-        if (current) {
-            setValues({ 
-                time: current.toLocaleTimeString(),
-                date: current.toLocaleDateString()
-            });
-        }
-    }, [error, current]);
+    }, [error]);
 
     if (loading) return <ActivityIndicator size="large" color={Colors.primaryColor} />;
 
