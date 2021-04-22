@@ -5,10 +5,13 @@ import { useQuery } from '@apollo/client';
 import { REGISTERED_TIMES } from '../graphql/requests';
 
 import ListItem from './ListItem';
+import { Spinner } from '../components/commons';
 
 const ComponentList = ({ userId, admin }) => { 
     const [dynamicList, setDynamicList] = useState([]);
-    const { data } = useQuery(REGISTERED_TIMES);
+    const { data, loading } = useQuery(REGISTERED_TIMES, {
+        fetchPolicy: 'network-only'
+    });
 
     useEffect(() => {
         if (data && userId) {
@@ -22,6 +25,8 @@ const ComponentList = ({ userId, admin }) => {
             setDynamicList(registeredTimes);
         }
     }, [data, userId]);
+
+    if (loading) return <Spinner />;
 
     const renderItem = ({ item }) => {
         return (

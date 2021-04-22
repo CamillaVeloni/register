@@ -43,7 +43,7 @@ const SvgComponent = ({
                 />
             </Svg>
             <Text style={[styles.title, ownTitleStyle]}>Register</Text>
-            <Text style={[styles.subtitle, ownSubtitleStyle]}>Acess Control</Text>
+            <Text style={[styles.subtitle, ownSubtitleStyle]}>Access Control</Text>
         </View>
     );
 };

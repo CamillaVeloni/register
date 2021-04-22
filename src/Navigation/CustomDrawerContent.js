@@ -15,7 +15,7 @@ const CustomDrawerContent = props => {
     const onLogOut = async () => {
         try {
             onSignOut();
-            props.navigation.navigate('Login');
+            props.navigation.replace('Login');
         } catch (err) {
           throw new Error(err);
         }

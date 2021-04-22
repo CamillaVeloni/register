@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'; 
-import { ActivityIndicator, View, StyleSheet } from 'react-native'; 
+import { View, StyleSheet } from 'react-native'; 
 import { FAB } from 'react-native-paper';
 import { useQuery } from '@apollo/client';
 
+import { Spinner } from '../components/commons';
 import ComponentList from '../components/ComponentList';
 import { FETCHING_USER } from '../graphql/requests';
 import DrawerMenuBtn from '../components/DrawerMenuBtn';
@@ -16,19 +17,23 @@ import ModalComponent from '../components/ModalComponent';
 const RegisterScreen = () => { 
     const [modalVisible, setModalVisible] = useState(false); // State para abrir ou fechar o modal
     const [userId, setUserId] = useState();
-    const { data, loading } = useQuery(FETCHING_USER);
+    const [userName, setUsername] = useState();
+    const { data, loading } = useQuery(FETCHING_USER, {
+        fetchPolicy: 'network-only'
+    });
 
     useEffect(() => {
         if (data) {
-            const { me: { id } } = data;
+            const { me: { id, username } } = data;
             setUserId(id);
+            setUsername(username);
         }
     }, [data]);
 
     return ( 
         <View style={{ flex: 1 }}>
             {loading ? (
-                <ActivityIndicator size='large' color='green' />
+                <Spinner />
             ) : (
                 <ComponentList userId={userId} />
             )
@@ -41,6 +46,8 @@ const RegisterScreen = () => {
             <ModalComponent 
                 modalVisible={modalVisible} 
                 onClose={() => setModalVisible(false)}
+                userId={userId}
+                userName={userName}
             />
         </View>
     );

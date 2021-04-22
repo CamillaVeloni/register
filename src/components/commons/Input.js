@@ -1,29 +1,107 @@
-import React from 'react'; 
-import { View, Text, TextInput, StyleSheet } from 'react-native'; 
+import React, { useReducer, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
 
-// Componente reusável para o input
-const Input = props => { 
-    return ( 
-     <View style={props.ownContainerStyle}> 
-        {props.requiresLabel && (
+const INPUT_CHANGE = 'INPUT_CHANGE';
+const INPUT_BLUR = 'INPUT_BLUR';
+
+const inputReducer = (state, action) => {
+  switch (action.type) {
+    case INPUT_CHANGE:
+      return {
+        ...state,
+        value: action.value,
+        isValid: action.isValid
+      };
+    case INPUT_BLUR:
+      return {
+        ...state,
+        touched: true
+      };
+    default:
+      return state;
+  }
+};
+
+const Input = props => {
+    // State do input + validação do mesmo de acordo com o requerimento colocado na tela que chamou
+  const [inputState, dispatch] = useReducer(inputReducer, {
+    value: props.initialValue ? props.initialValue : '',
+    isValid: props.initiallyValid,
+    touched: false
+  });
+
+  const { onInputChange, id } = props;
+
+  useEffect(() => {
+    if (inputState.touched) {
+      onInputChange(id, inputState.value, inputState.isValid);
+    }
+  }, [inputState, onInputChange, id]);
+
+  const textChangeHandler = text => {
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let isValid = true;
+    if (props.required && text.trim().length === 0) {
+      isValid = false;
+    }
+    if (props.email && !emailRegex.test(text.toLowerCase())) {
+      isValid = false;
+    }
+    if (props.min != null && +text < props.min) {
+      isValid = false;
+    }
+    if (props.max != null && +text > props.max) {
+      isValid = false;
+    }
+    if (props.minLength != null && text.length < props.minLength) {
+      isValid = false;
+    }
+    dispatch({ type: INPUT_CHANGE, value: text, isValid });
+  };
+
+  const lostFocusHandler = () => {
+    dispatch({ type: INPUT_BLUR });
+  };
+
+  return (
+    <View style={[styles.formControl, props.ownContainerStyle]}>
+      {props.requiresLabel && (
             <Text style={[styles.label, props.ownLabelStyle]}>{props.label}</Text>
         )}
-        <TextInput 
-            {...props}
-            style={[styles.input, props.ownInputStyle]}
-        />
-     </View>
-    );
+      <TextInput
+        {...props}
+        style={[styles.input, props.ownInputStyle]}
+        value={inputState.value}
+        onChangeText={textChangeHandler}
+        onBlur={lostFocusHandler}
+      />
+      <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{!inputState.isValid && inputState.touched && props.errorText}</Text>
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    input: {
-        marginHorizontal: 2,
-        marginVertical: 5,
-    },
-    label: {
-        marginVertical: 5
-    }
+  formControl: {
+    width: '100%'
+  },
+  label: {
+    fontFamily: 'open-sans-bold',
+    marginVertical: 8
+  },
+  input: {
+    paddingHorizontal: 2,
+    paddingVertical: 5,
+  },
+  errorContainer: {
+    marginVertical: 5
+  },
+  errorText: {
+    fontFamily: 'open-sans',
+    color: 'red',
+    fontSize: 13
+  }
 });
 
 export { Input };

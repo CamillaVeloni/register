@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useCallback, useReducer } from 'react'; 
 import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native'; 
 import { useMutation } from '@apollo/client';
 
@@ -8,65 +8,86 @@ import { Input } from '../components/commons';
 import SvgComponent from '../components/LogoComponent';
 import Colors from '../assets/colors/Colors';
 
+const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
+
+// Reducer para formulário de login
+const formReducer = (state, action) => { 
+    if (action.type === FORM_INPUT_UPDATE) {
+      const updatedValues = {
+        ...state.inputValues,
+        [action.input]: action.value
+      };
+      const updatedValidities = {
+        ...state.inputValidities,
+        [action.input]: action.isValid
+      };
+      let updatedFormIsValid = true;
+      for (const key in updatedValidities) {
+        updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
+      }
+      return {
+        formIsValid: updatedFormIsValid,
+        inputValidities: updatedValidities,
+        inputValues: updatedValues
+      };
+    }
+    return state;
+};
+
 // Tela login
 // Componentes para ele: LogoComponent 
 const LoginScreen = ({ navigation }) => { 
     // States para o formulário de login
-    const [login, setLogin] = useState(''); // email
-    const [password, setPassword] = useState(''); // senha
-    const [loading, setLoading] = useState(''); // spinner para espera resposta
-    const [err, setErr] = useState(false); // mensagem de erro
+    const [formState, dispatchFormState] = useReducer(formReducer, { // States para o formulário
+        inputValues: {
+          email: '',
+          password: '',
+        },
+        inputValidities: {
+          name: false,
+          date: false,
+          time: false
+        },
+        formIsValid: false
+    });
 
-    function clearStates() {
-        setLogin('');
-        setPassword('');
-        setErr('');
-        setLoading(false);
-    }
+    const inputChangeHandler = useCallback( // Input change para os states do formulário ~~ passando do input!!
+        (inputIdentifier, inputValue, inputValidity) => {
+          dispatchFormState({
+            type: FORM_INPUT_UPDATE,
+            value: inputValue,
+            isValid: inputValidity,
+            input: inputIdentifier
+          });
+        },
+        [dispatchFormState]
+      );
 
     // Usando hook para request ao api
     // onError: quando ocorre algum erro no request, volta o erro (err.graphQLErrors[0].message)
     // onCompleted: volta a data de quando estiver sucedido. 
     // No onCompleted a gente limpa todos os states, seta o token no asyncStorage e navega para tela 'Meus Registros'
-    const [LoginUserMutation] = useMutation(LOGIN_MUTATION, {
-        onError: error => {
-            setErr('Algo deu errado tente novamente mais tarde.');
-            setLoading(false);
+    const [login, { loading }] = useMutation(LOGIN_MUTATION, {
+        variables: {
+            input:
+            {
+            identifier: formState.inputValues.email,
+            password: formState.inputValues.password,
+            }
         },
-        onCompleted: ({ login: { jwt, user } }) => {
-            const { id } = user;
-            clearStates();
+        onCompleted: ({ login: { jwt } }) => {
             fetchToken(jwt);
-            navigation.navigate('Main', { userID: id });
+            navigation.navigate('Main');
         }
     });
-    // Função para botão de login
-    const onLoginPress = async (ev) => {
-        ev.preventDefault();
 
-        setLoading(true);
-        LoginUserMutation({
-            variables: {
-                input:
-                {
-                identifier: login,
-                password,
-                }
-            },
-        });
-    };
-
-    // Renderizando uma mensagem de erro
-    function renderErrorMsg() {
-        if (err) return <Text style={styles.errorStyle}>{err}</Text>;
-    }
     // Renderizando botão de login ou spinner enquanto espera resposta da api
     function renderBtnLogin() {
         if (loading) return <ActivityIndicator size="large" color={Colors.primaryColor} />;
         return (
             <TouchableOpacity
                     style={styles.formBtn}
-                    onPress={onLoginPress}
+                    onPress={login}
             >
                     <Text style={styles.formTextBtn}>login</Text>
             </TouchableOpacity>
@@ -86,23 +107,28 @@ const LoginScreen = ({ navigation }) => {
         />
         <View style={styles.formContainer}>
             <Input
+                id='email'
+                email
                 placeholder='Login' 
                 placeholderTextColor='black'
-                keyboardType='default'
+                errorText='Digite um e-mail válido'
                 autoCapitalize='none'
-                value={login}
-                onChangeText={setLogin}
+                returnKeyType='next'
+                keyboardType='default'
+                required
+                onInputChange={inputChangeHandler}
             />
             <Input
+                id='password'
                 placeholder='Senha' 
                 placeholderTextColor='black'
                 secureTextEntry
-                keyboardType='default'
+                errorText='Digite uma senha válida'
                 autoCapitalize='none'
-                value={password}
-                onChangeText={setPassword}
+                keyboardType='default'
+                required
+                onInputChange={inputChangeHandler}
             />
-            {renderErrorMsg()}
             {renderBtnLogin()}
         </View>
     </View>

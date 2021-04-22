@@ -1,17 +1,50 @@
-import React, { useState } from 'react'; 
-import { Modal, StyleSheet, Text, View, TouchableOpacity } from 'react-native'; 
+import React, { useState, useEffect } from 'react'; 
+import { Modal, StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'; 
+import { useMutation } from '@apollo/client';
 
-import { Input } from '../components/commons';
+import { CREATE_REGISTERED_TIME } from '../graphql/requests';
 import Colors from '../assets/colors/Colors';
 
 // Componente Modal para criação de registros 
 /// Aparece quando o floating button da Tela de 'Meus Registros' for clicado
-const ModalComponent = ({ modalVisible, onClose }) => { 
-    // Formulário para criar registro
-    const [name, setName] = useState('');
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
-    
+const ModalComponent = ({ modalVisible, onClose, userId, userName }) => { 
+    const [values, setValues] = useState({
+        time: '',
+        date: ''
+    });
+    const [current, setCurrent] = useState(new Date());
+
+    const [savingRegister, { loading, error }] = useMutation(CREATE_REGISTERED_TIME, {
+        variables: {
+            input: {
+                data: {
+                    timeRegistered: current.toLocaleString(),
+                    user: userId,
+                    published_at: current,
+                    created_by: userId,
+                    updated_by: userId
+                }
+            }
+        },
+        onCompleted: () => {
+            Alert.alert('Registro salvo com sucesso.', [{ text: 'Okay' }]);
+        }
+    });
+
+    useEffect(() => {
+        if (error) {
+            Alert.alert('Algo deu errado, tente outra vez mais tarde.', error.graphQLErrors[0].message, [{ text: 'Okay' }]);
+        }
+        if (current) {
+            setValues({ 
+                time: current.toLocaleTimeString(),
+                date: current.toLocaleDateString()
+            });
+        }
+    }, [error, current]);
+
+    if (loading) return <ActivityIndicator size="large" color={Colors.primaryColor} />;
+
     return ( 
         <Modal 
             visible={modalVisible}
@@ -22,52 +55,32 @@ const ModalComponent = ({ modalVisible, onClose }) => {
             <View
                 style={styles.modalView}
             >
-                <Text style={styles.textFormat}>Novo Registro</Text>
-                <Input
-                    placeholder='Digite seu nome aqui'
-                    placeholderTextColor='black'
-                    keyboardType='default'
-                    value={name}
-                    onChangeText={setName}
-                    ownContainerStyle={styles.containerNameInput}
-                />
-                    <View style={{ flexDirection: 'row' }}>
-                        <Input
-                            placeholder='03/03/2021' 
-                            requiresLabel
-                            label='Data:'
-                            placeholderTextColor='black'
-                            keyboardType='default'
-                            value={date}
-                            ownContainerStyle={styles.containerInput}
-                            ownInputStyle={styles.borderInput}
-                            onChangeText={setDate}
-                        />
-                        <Input
-                            placeholder='10:00' 
-                            placeholderTextColor='black'
-                            requiresLabel
-                            label='Horário'
-                            keyboardType='default'
-                            ownContainerStyle={styles.containerInput}
-                            ownInputStyle={styles.borderInput}
-                            value={time}
-                            onChangeText={setTime}
-                        />
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity
-                            style={[styles.formBtn, { backgroundColor: Colors.accentColor }]}
-                        >
-                            <Text style={[styles.formTextBtn, { color: 'white' }]}>Salvar</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.formBtn, { backgroundColor: 'white' }]}
-                            onPress={onClose}
-                        >
-                            <Text style={[styles.formTextBtn, { color: Colors.accentColor }]}>Cancelar</Text>
-                        </TouchableOpacity>
-                    </View>
+                <Text style={[styles.titleFormat, styles.textFormat]}>Novo Registro</Text>
+                <View style={styles.containerName}>
+                    <Text style={styles.textFormat}>{userName ? userName.toUpperCase() : ''}</Text>
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={[styles.textFormat, styles.containerInfoTitle]}>Data:</Text>
+                    <Text style={[styles.textFormat, styles.containerInfoTitle]}>Horário:</Text>
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={[styles.textFormat, styles.containerInfo]}>{values.date}</Text>
+                    <Text style={[styles.textFormat, styles.containerInfo]}>{values.time}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', margin: 5 }}>
+                    <TouchableOpacity
+                        style={[styles.formBtn, { backgroundColor: Colors.accentColor }]}
+                    >
+                        <Text style={[styles.formTextBtn, { color: 'white' }]}>Salvar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.formBtn, { backgroundColor: 'white' }]}
+                        onPress={savingRegister}
+                        onPress={onClose}
+                    >
+                        <Text style={[styles.formTextBtn, { color: Colors.accentColor }]}>Cancelar</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </Modal>
     );
@@ -86,19 +99,36 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 15
     },
+    titleFormat: {
+        fontWeight: 'bold',
+    },
     textFormat: {
         fontSize: 16,
-        fontWeight: 'bold',
-        marginVertical: 10
+        marginVertical: 5
     },
-    containerNameInput: {
-        margin: 5,
+    containerInfoTitle: {
+        padding: 10,
+        marginHorizontal: 10,
+        alignContent: 'center',
+        width: '40%',
+    },
+    containerInfo: {
+        padding: 15,
+        paddingHorizontal: 40,
+        margin: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 20,
+    },
+    containerName: {
+        margin: 10,
+        padding: 15,
         borderWidth: 1,
         borderColor: '#ddd',
         borderRadius: 20,
         width: '100%'
     },
-    containerInput: {
+    containerRow: {
         width: '50%',
         margin: 5,
     },

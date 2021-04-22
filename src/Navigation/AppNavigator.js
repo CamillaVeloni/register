@@ -3,11 +3,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { isSignedIn } from '../actions/auth';
 import SplashScreen from '../screens/SplashScreen';
 import DrawerNavigator from './RegisterNavigator';
 import LoginScreen from '../screens/LoginScreen';
 import { navigationRef } from './RootNavigation';
+import { ACCESS_TOKEN } from '../config';
 
 /// Main Navigator
 const AppNavigator = () => {
@@ -17,7 +17,7 @@ const AppNavigator = () => {
 
     useEffect(() => {
         const tryLocalSignin = async () => {
-            const token = isSignedIn();
+            const token = await AsyncStorage.getItem(ACCESS_TOKEN);
             if (token) {
                 setIsLogged(true);
             } else {

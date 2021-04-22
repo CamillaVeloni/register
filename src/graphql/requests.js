@@ -5,9 +5,6 @@ export const LOGIN_MUTATION = gql`
 mutation login($input: UsersPermissionsLoginInput!){
     login(input:$input){
       jwt
-      user {
-        id
-      }
     }
 }
 `;
@@ -35,6 +32,16 @@ query {
       role {
         name
       }
+    }
+  }
+}
+`;
+
+export const CREATE_REGISTERED_TIME = gql`
+mutation createRegisteredTime($input:createRegisteredTimeInput) {
+  createRegisteredTime(input:$input){
+    registeredTime {
+      id
     }
   }
 }
