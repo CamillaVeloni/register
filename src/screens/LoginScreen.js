@@ -80,7 +80,7 @@ const LoginScreen = ({ navigation }) => {
             navigation.navigate('Main');
         }
     });
-
+    
     useEffect(() => {
       if (error) {
             Alert.alert('Algo deu errado, tente outra vez mais tarde.');
