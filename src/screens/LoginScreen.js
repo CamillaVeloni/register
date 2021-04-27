@@ -44,9 +44,8 @@ const LoginScreen = ({ navigation }) => {
           password: '',
         },
         inputValidities: {
-          name: false,
-          date: false,
-          time: false
+          email: false,
+          password: false
         },
         formIsValid: false
     });
