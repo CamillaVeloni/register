@@ -1,4 +1,5 @@
-# Projeto para teste prático feito no React Native
+# App Registro de Ponto
+Projeto feito para teste em uma empresa
 
 # Setup:
 
